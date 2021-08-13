@@ -37,7 +37,6 @@
 import PostForm from "@/components/PostForm"
 import PostList from "@/components/PostList"
 import axios from 'axios';
-import { config } from 'vue/types/umd';
 
 export default {
     components: {
@@ -53,6 +52,7 @@ export default {
            searchQuery: '',
            page: 1,
            limit: 10,
+           totalPages: 0,
            sortOptions: [
                {value: 'title',name: 'По названию'},
                {value: 'body',name: 'По cодержимому'},
@@ -82,6 +82,7 @@ export default {
                             _limit: this.limit
                         }
                     });
+                    this.totalPages = Math.ceil(response.headers['x-total-count'] / this.limit);
                     this.posts = response.data;
             } catch (e) {
                 alert("Ошибка")

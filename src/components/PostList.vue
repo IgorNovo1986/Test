@@ -1,7 +1,7 @@
 <template>
     <div v-if="posts.length > 0">
         <h3>Список пользователей</h3>
-        <transition-group name="user-list">
+        <transition-group name="post-list">
             <post-item 
                 v-for="post in posts" 
                 :key="post.id" 
@@ -29,17 +29,21 @@ export default {
 </script>
 
 <style scoped>
-    .user-list-item {
+    .post-list-item {
         display: inline-block;
         margin-right: 10px;
     }   
-    .user-list-enter-active,
-    .user-list-leave-active {
+    .post-list-enter-active,
+    .post-list-leave-active {
         transition: all 0.4s ease;
     }
-    .user-list-enter-from,
-    .user-list-leave-to {
+    .post-list-enter-from,
+    .post-list-leave-to {
         opacity: 0;
         transform: translateX(150px);
     }
+
+    .post-list-move {
+  transition: transform 0.4s ease;
+}
 </style>

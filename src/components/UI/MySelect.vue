@@ -28,7 +28,7 @@ export default {
     },
     methods: {
         changeOptions (event){
-            this.$emit('value', event.target.value)
+            this.$emit('input', event.target.value)
         }
     }
     

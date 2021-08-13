@@ -1,6 +1,11 @@
 <template>
     <div class="app">
         <h1>Страница с постами</h1>
+        <my-input 
+            v-model="searchQuery"
+            placeholder="поиск..."
+        >
+        </my-input>
         <div class="app__btns">
             <my-button
                 @click="showDialog"
@@ -20,12 +25,11 @@
             />
         </my-dialog> 
         <post-list 
-            :posts="sortedPosts"
+            :posts="sortedAndSearchedPosts"
             @remove ="removePost"  
             v-if="!isPostsLoading"
         />
         <div v-else>Идет загрузка....</div>
-        //{{selectedSort}}
     </div>
 </template>
 
@@ -33,11 +37,12 @@
 import PostForm from "@/components/PostForm"
 import PostList from "@/components/PostList"
 import axios from 'axios';
+import { config } from 'vue/types/umd';
 
 export default {
     components: {
       PostForm,
-      PostList
+      PostList,
     },
     data () {
         return {
@@ -45,6 +50,9 @@ export default {
            dialogVisible: false,
            isPostsLoading: false,
            selectedSort: '',
+           searchQuery: '',
+           page: 1,
+           limit: 10,
            sortOptions: [
                {value: 'title',name: 'По названию'},
                {value: 'body',name: 'По cодержимому'},
@@ -68,7 +76,12 @@ export default {
         async fetchPosts () {
             try {
                 this.isPostsLoading = true;
-                    const response = await axios.get('https://jsonplaceholder.typicode.com/posts?_limit=10');
+                    const response = await axios.get('https://jsonplaceholder.typicode.com/posts', {
+                        params: {
+                            _page: this.page,
+                            _limit: this.limit
+                        }
+                    });
                     this.posts = response.data;
             } catch (e) {
                 alert("Ошибка")
@@ -84,7 +97,10 @@ export default {
         sortedPosts () {
             console.log("выбрано")
             return [...this.posts].sort((post1, post2) => post1[this.selectedSort]?.localeCompare(post2[this.selectedSort]))
-            }
+            },
+        sortedAndSearchedPosts () {
+            return this.sortedPosts.filter(post => post.title.toLowerCase().this.includes(this.searchQuery.toLowerCase()))
+        }
     }
     // watch: {
     //     selectedSort () {
